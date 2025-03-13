@@ -159,7 +159,7 @@ target_link_libraries(${PROJECT_NAME}
   search  # search::DummyRankTable in CachingRankTableLoader
   platform
   geometry
-  protobuf
+  protobuf::libprotobuf-lite
   coding
 )
 

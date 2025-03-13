@@ -4,7 +4,8 @@
 #include "indexer/feature_meta.hpp"
 #include "indexer/feature_utils.hpp"
 
-#include <functional>
+#include <list>
+#include <optional>
 #include <string>
 #include <variant>
 #include <vector>

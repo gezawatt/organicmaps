@@ -40,9 +40,6 @@ if (NOT WITH_SYSTEM_PROVIDED_3PARTY)
   # Add pugixml library.
   add_subdirectory(pugixml)
 
-  # Add protobuf library.
-  add_subdirectory(protobuf)
-
   if (NOT PLATFORM_LINUX)
     add_subdirectory(freetype)
     add_subdirectory(icu)
@@ -59,8 +56,13 @@ add_subdirectory(bsdiff-courgette)
 add_subdirectory(minizip)
 add_subdirectory(open-location-code)
 add_subdirectory(opening_hours)
+add_subdirectory(protobuf)
 add_subdirectory(stb_image)
 add_subdirectory(succinct)
+
+add_library(fast_double_parser INTERFACE)
+add_library(fast_double_parser::fast_double_parser ALIAS fast_double_parser)
+target_include_directories(fast_double_parser INTERFACE "${OMIM_ROOT}/3party/fast_double_parser/include")
 
 add_subdirectory(vulkan_wrapper)
 
