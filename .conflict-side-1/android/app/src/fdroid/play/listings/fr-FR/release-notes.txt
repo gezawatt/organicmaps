@@ -1,0 +1,8 @@
+• Nouvelles données OpenStreetMap du 21 janvier
+• Afficher un panneau de limitation de vitesse en mode navigation
+• Ajout des langues serbe (cyrillique) et lettone
+• Android Auto : trier les signets, expérience de demande d'autorisation de localisation améliorée
+• Ajout de POI de tour
+• Ajout d'un paramètre pour les liens d'hôtel Kayak.com et d'une option de désinscription lors de la première utilisation
+
+…plus de détails sur omaps.org/news

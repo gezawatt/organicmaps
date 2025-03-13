@@ -1,0 +1,20 @@
+• Novos dados do OpenStreetMap de 21 de janeiro
+• Toque nas trilhas para exibir estatísticas e um perfil de elevação interativo
+• Um botão de Gravação de Trilha independente
+• Widget de Atividade ao Vivo de Gravação de Trilha com estatísticas de trilha (iOS 16.2 e posterior)
+• Adicionados idiomas sérvio (cirílico) e letão
+• Adicionados POIs de torre
+
+• Adicionados ícones específicos para Hong Kong, metrô de Shenzhen e VLT de Berlim, um ícone de monotrilho separado
+• Adicionado um menu de contexto ao botão de coordenadas em detalhes de POI
+• Mostrar um pop-up de lembrete sempre que um modo de tela cheia for inserido
+• Exibir uma explicação quando a pesquisa de categoria do Editor OSM não retornar nada
+• Diferenciar entre cores de grama e pradaria/prado
+• Cor de jardins residenciais menos saturada/proeminente
+• Corrigidos escudos de estrada amarelos exibidos como verdes no modo noturno
+• Exibir preenchimentos de vegetação mais cedo no estilo de navegação do carro
+• Exibir níveis complexos não numéricos para construir POIs
+• Melhorar a pesquisa de picos e selas/passagens
+• Inglês como idioma de pesquisa adicional no Editor OSM
+• Atualização de traduções em alemão, estoniano, finlandês, italiano, turco
+• ... e muito mais correções de bugs e melhorias na IU

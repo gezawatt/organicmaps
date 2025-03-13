@@ -1,0 +1,3 @@
+ancestorEntries = ["indexer/edit_journal.hpp"]
+ourEntries = ["indexer/edit_journal.hpp"]
+theirEntries = ["indexer/edit_journal.hpp"]

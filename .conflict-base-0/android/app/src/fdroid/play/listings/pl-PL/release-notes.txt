@@ -1,0 +1,8 @@
+• Nowe dane OpenStreetMap z 21 stycznia
+• Wyświetlanie znaku ograniczenia prędkości w trybie nawigacji
+• Dodano języki serbski (cyrylica) i łotewski
+• Android Auto: sortowanie zakładek, ulepszono prośbę o pozwolenie na lokalizację
+• Dodano POI dla wieży
+• Dodano ustawienie dla linków do hoteli na Kayak.com oraz możliwość wyłączenia ich przy pierwszym uruchomieniu
+
+…więcej szczegółów na omaps.org/news

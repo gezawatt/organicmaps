@@ -1,0 +1,8 @@
+• Nuevos datos de OpenStreetMap del 21 de enero
+• Límite de velocidad en el modo de navegación
+• Añadidos idiomas serbio (cirílico) y letón
+• Android Auto: opción de ordenar marcadores, mejorada la experiencia al solicitar ubicación
+• Añadidos PDI de torres
+• Añadidas opciones para enlaces de hotel de Kayak.com y de exclusión al primer uso
+
+…más detalles en omaps.org/news
