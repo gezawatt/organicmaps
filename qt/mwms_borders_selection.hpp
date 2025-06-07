@@ -16,6 +16,7 @@ namespace qt
 {
 class MwmsBordersSelection : public QDialog
 {
+  Q_OBJECT
 public:
   MwmsBordersSelection(QWidget * parent);
 

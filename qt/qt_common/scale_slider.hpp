@@ -13,6 +13,7 @@ class MapWidget;
 
 class ScaleSlider : public QSlider
 {
+  Q_OBJECT
 public:
   ScaleSlider(Qt::Orientation orient, QWidget * parent);
 

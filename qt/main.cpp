@@ -19,6 +19,7 @@
 #include "build_style/build_style.h"
 
 #include <QtGlobal>
+#include <QTranslator>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFileDialog>
@@ -135,6 +136,13 @@ int main(int argc, char * argv[])
   UNUSED_VALUE(mainGuard);
 
   QApplication app(argc, argv);
+  QTranslator translator;
+  // TODO: add an "app language" selector to preferences dialog.
+  QString translationFile = QString("desktop_") % languages::GetCurrentTwine().c_str();
+  bool translatorLoaded = translator.load(translationFile, platform.ResourcesDir().c_str());
+  std::string msg = "Translator \"" + translationFile.toStdString() + ".qm\" loaded:";
+  LOG(LINFO, (msg, translatorLoaded ? "true" : "false"));
+  app.installTranslator(&translator);
   app.setDesktopFileName("app.organicmaps.desktop");
   platform.SetupMeasurementSystem();
 

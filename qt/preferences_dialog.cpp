@@ -37,15 +37,15 @@ namespace qt
     setWindowTitle(tr("Preferences"));
 
     QButtonGroup * unitsGroup = new QButtonGroup(this);
-    QGroupBox * unitsRadioBox = new QGroupBox("System of measurement");
+    QGroupBox * unitsRadioBox = new QGroupBox(tr("System of measurement"));
     {
       QHBoxLayout * layout = new QHBoxLayout();
 
-      QRadioButton * radioButton = new QRadioButton("Metric");
+      QRadioButton * radioButton = new QRadioButton(tr("Metric"));
       layout->addWidget(radioButton);
       unitsGroup->addButton(radioButton, static_cast<int>(Units::Metric));
 
-      radioButton = new QRadioButton("Imperial (foot)");
+      radioButton = new QRadioButton(tr("Imperial (foot)"));
       layout->addWidget(radioButton);
       unitsGroup->addButton(radioButton, static_cast<int>(Units::Imperial));
 
@@ -78,7 +78,7 @@ namespace qt
       });
     }
 
-    QCheckBox * largeFontCheckBox = new QCheckBox("Use larger font on the map");
+    QCheckBox * largeFontCheckBox = new QCheckBox(tr("Use larger font on the map"));
     {
       largeFontCheckBox->setChecked(framework.LoadLargeFontsSize());
       connect(largeFontCheckBox, &QCheckBox::stateChanged, [&framework](int i)
@@ -87,7 +87,7 @@ namespace qt
       });
     }
 
-    QCheckBox * transliterationCheckBox = new QCheckBox("Transliterate to Latin");
+    QCheckBox * transliterationCheckBox = new QCheckBox(tr("Transliterate to Latin"));
     {
       transliterationCheckBox->setChecked(framework.LoadTransliteration());
       connect(transliterationCheckBox, &QCheckBox::stateChanged, [&framework](int i)
@@ -98,7 +98,7 @@ namespace qt
       });
     }
 
-    QCheckBox * developerModeCheckBox = new QCheckBox("Developer Mode");
+    QCheckBox * developerModeCheckBox = new QCheckBox(tr("Developer Mode"));
     {
       bool developerMode;
       if (settings::Get(settings::kDeveloperMode, developerMode) && developerMode)
@@ -109,7 +109,7 @@ namespace qt
       });
     }
 
-    QLabel * mapLanguageLabel = new QLabel("Map Language");
+    QLabel * mapLanguageLabel = new QLabel(tr("Map Language"));
     QComboBox * mapLanguageComboBox = new QComboBox();
     {
       // The property maxVisibleItems is ignored for non-editable comboboxes in styles that
@@ -137,16 +137,16 @@ namespace qt
     }
 
     QButtonGroup * nightModeGroup = new QButtonGroup(this);
-    QGroupBox * nightModeRadioBox = new QGroupBox("Night Mode");
+    QGroupBox * nightModeRadioBox = new QGroupBox(tr("Night Mode"));
     {
       using namespace style_utils;
       QHBoxLayout * layout = new QHBoxLayout();
 
-      QRadioButton * radioButton = new QRadioButton("Off");
+      QRadioButton * radioButton = new QRadioButton(tr("Off"));
       layout->addWidget(radioButton);
       nightModeGroup->addButton(radioButton, static_cast<int>(NightMode::Off));
 
-      radioButton = new QRadioButton("On");
+      radioButton = new QRadioButton(tr("On"));
       layout->addWidget(radioButton);
       nightModeGroup->addButton(radioButton, static_cast<int>(NightMode::On));
 

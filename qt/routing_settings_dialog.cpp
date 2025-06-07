@@ -100,7 +100,7 @@ RoutingSettings::RoutingSettings(QWidget * parent, Framework & framework)
 : QDialog(parent)
 , m_framework(framework)
 {
-  setWindowTitle("Routing settings");
+  setWindowTitle(tr("Routing settings"));
   QVBoxLayout * layout = new QVBoxLayout(this);
 
   {
@@ -122,29 +122,29 @@ RoutingSettings::RoutingSettings(QWidget * parent, Framework & framework)
       lineEdit->setText(defaultText.c_str());
       form->addRow(title, lineEdit);
     };
-    addCoordLine("Start coords (lat, lon)", true);
-    addCoordLine("Finish coords (lat, lon)", false);
+    addCoordLine(tr("Start coords (lat, lon)").toStdString().c_str(), true);
+    addCoordLine(tr("Finish coords (lat, lon)").toStdString().c_str(), false);
 
     using namespace routing;
     m_routerType = new QComboBox(frame);
-    m_routerType->insertItem(static_cast<int>(RouterType::Vehicle), "car");
-    m_routerType->insertItem(static_cast<int>(RouterType::Pedestrian), "pedestrian");
-    m_routerType->insertItem(static_cast<int>(RouterType::Bicycle), "bicycle");
-    m_routerType->insertItem(static_cast<int>(RouterType::Transit), "transit");
-    m_routerType->insertItem(static_cast<int>(RouterType::Ruler), "ruler");
-    form->addRow("Choose router:", m_routerType);
+    m_routerType->insertItem(static_cast<int>(RouterType::Vehicle), tr("car"));
+    m_routerType->insertItem(static_cast<int>(RouterType::Pedestrian), tr("pedestrian"));
+    m_routerType->insertItem(static_cast<int>(RouterType::Bicycle), tr("bicycle"));
+    m_routerType->insertItem(static_cast<int>(RouterType::Transit), tr("transit"));
+    m_routerType->insertItem(static_cast<int>(RouterType::Ruler), tr("ruler"));
+    form->addRow(tr("Choose router:"), m_routerType);
 
     m_showTurnsCheckbox = new QCheckBox({}, frame);
-    form->addRow("Show turns:", m_showTurnsCheckbox);
+    form->addRow(tr("Show turns:"), m_showTurnsCheckbox);
 
     m_useDebugGuideCheckbox = new QCheckBox({}, frame);
-    form->addRow("Use debug guide track:", m_useDebugGuideCheckbox);
+    form->addRow(tr("Use debug guide track:"), m_useDebugGuideCheckbox);
 
     layout->addWidget(frame);
   }
 
   {
-    m_saveSessionCheckbox = new QCheckBox("Save these settings for the next app session", this);
+    m_saveSessionCheckbox = new QCheckBox(tr("Save these settings for the next app session"), this);
     layout->addWidget(m_saveSessionCheckbox);
   }
 
@@ -227,7 +227,7 @@ void RoutingSettings::ShowModal()
 
   if (!SaveSettings())
   {
-    ShowMessage("Bad start or finish coords input.");
+    ShowMessage(tr("Bad start or finish coords input.").toStdString());
     ShowModal();
     return;
   }

@@ -13,6 +13,10 @@ public:
 
 private slots:
   void OnAction();
+
+private:
+  void SwitchToLogin();
+  void SwitchToLogout();
 };
 
 } // namespace qt

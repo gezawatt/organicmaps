@@ -16,6 +16,7 @@ namespace qt
 {
 class RoutingSettings : public QDialog
 {
+  Q_OBJECT
 public:
   static void LoadSession(Framework & framework);
 

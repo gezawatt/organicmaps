@@ -1,7 +1,9 @@
 project(desktop)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
-qt6_standard_project_setup()
+qt6_standard_project_setup(I18N_TRANSLATED_LANGUAGES ru)
+qt6_add_translations(desktop QM_FILES_OUTPUT_VARIABLE qm_files)
+install(FILES ${qm_files} DESTINATION ${PROJECT_SOURCE_DIR}/translations)
 
 QT6_ADD_RESOURCES(RES_SOURCES res/resources.qrc)
 

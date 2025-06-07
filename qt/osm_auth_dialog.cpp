@@ -64,19 +64,19 @@ OsmAuthDialog::OsmAuthDialog(QWidget * parent)
   setWindowTitle(tr(kLoginDialogTitle));
 }
 
-void SwitchToLogin(QDialog * dlg)
+void OsmAuthDialog::SwitchToLogin()
 {
-  dlg->findChild<QLineEdit *>("login")->setEnabled(true);
-  dlg->findChild<QLineEdit *>("password")->setEnabled(true);
-  dlg->findChild<QPushButton *>("button")->setText(dlg->tr("Login"));
+  findChild<QLineEdit *>("login")->setEnabled(true);
+  findChild<QLineEdit *>("password")->setEnabled(true);
+  findChild<QPushButton *>("button")->setText(tr("Login"));
 }
 
-void SwitchToLogout(QDialog * dlg)
+void OsmAuthDialog::SwitchToLogout()
 {
-  dlg->findChild<QLineEdit *>("login")->setEnabled(false);
-  dlg->findChild<QLineEdit *>("password")->setEnabled(false);
-  dlg->findChild<QPushButton *>("button")->setText(dlg->tr("Logout"));
-  dlg->setWindowTitle(dlg->tr(kLoginDialogTitle));
+  findChild<QLineEdit *>("login")->setEnabled(false);
+  findChild<QLineEdit *>("password")->setEnabled(false);
+  findChild<QPushButton *>("button")->setText(tr("Logout"));
+  setWindowTitle(tr(kLoginDialogTitle));
 }
 
 void OsmAuthDialog::OnAction()
@@ -107,7 +107,7 @@ void OsmAuthDialog::OnAction()
         auto const token = auth.GetAuthToken();
         settings::Set(kOauthTokenSetting, token);
 
-        SwitchToLogout(this);
+        SwitchToLogout();
       }
       else
       {
@@ -125,7 +125,7 @@ void OsmAuthDialog::OnAction()
   {
     settings::Set(kOauthTokenSetting, std::string());
 
-    SwitchToLogin(this);
+    SwitchToLogin();
   }
 }
 } // namespace qt

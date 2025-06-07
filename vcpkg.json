@@ -41,6 +41,13 @@
       "name": "qtimageformats",
       "default-features": false
     },
+    {
+      "name": "qttools",
+      "default-features": false,
+      "features": [
+        "linguist"
+      ]
+    },
     "qtpositioning",
     "qtsvg",
     "utfcpp",

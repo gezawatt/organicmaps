@@ -280,7 +280,7 @@ find_package(Threads REQUIRED)
 # Scripts
 
 if (NOT PLATFORM_IPHONE AND NOT PLATFORM_ANDROID)
-  list(APPEND qt_components Core Network)
+  list(APPEND qt_components Core Network LinguistTools)
   if (NOT SKIP_QT_GUI OR NOT SKIP_TESTS OR PYBINDINGS)
     list(APPEND qt_components Widgets)
   endif()
