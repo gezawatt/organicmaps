@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -16,18 +17,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
-import app.organicmaps.display.DisplayManager;
+import app.organicmaps.sdk.display.DisplayManager;
 import app.organicmaps.downloader.DownloaderActivity;
 import app.organicmaps.intent.Factory;
-import app.organicmaps.location.LocationHelper;
-import app.organicmaps.util.Config;
-import app.organicmaps.util.LocationUtils;
+import app.organicmaps.sdk.location.LocationHelper;
+import app.organicmaps.sdk.util.Config;
+import app.organicmaps.sdk.util.LocationUtils;
 import app.organicmaps.util.SharingUtils;
 import app.organicmaps.util.ThemeUtils;
 import app.organicmaps.util.Utils;
-import app.organicmaps.util.concurrency.UiThread;
-import app.organicmaps.util.log.Logger;
+import app.organicmaps.sdk.util.concurrency.UiThread;
+import app.organicmaps.sdk.util.log.Logger;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
@@ -69,6 +74,17 @@ public class SplashActivity extends AppCompatActivity
 
     UiThread.cancelDelayedTasks(mInitCoreDelayedTask);
     setContentView(R.layout.activity_splash);
+
+    ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root_view), new OnApplyWindowInsetsListener() {
+      @NonNull
+      @Override
+      public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets)
+      {
+        Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+        v.setPadding(0, 0, 0, systemBars.bottom);
+        return insets;
+      }
+    });
     mPermissionRequest = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
         result -> Config.setLocationRequested());
     mApiRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {

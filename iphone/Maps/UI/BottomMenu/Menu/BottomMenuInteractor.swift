@@ -66,12 +66,9 @@ extension BottomMenuInteractor: BottomMenuInteractorProtocol {
   }
 
   func shareLocation(cell: BottomMenuItemCell) {
-    let lastLocation = LocationManager.lastLocation()
-    guard let coordinates = lastLocation?.coordinate else {
-      let alert = UIAlertController(title: L("unknown_current_position"), message: nil, preferredStyle: .alert)
-      alert.addAction(UIAlertAction(title: L("ok"), style: .default, handler: nil))
-      viewController?.present(alert, animated: true, completion: nil)
-      return;
+    guard let coordinates = LocationManager.lastLocation()?.coordinate else {
+      viewController?.present(UIAlertController.unknownCurrentPosition(), animated: true, completion: nil)
+      return
     }
     guard let viewController = viewController else { return }
     let vc = ActivityViewController.share(forMyPosition: coordinates)
@@ -79,8 +76,20 @@ extension BottomMenuInteractor: BottomMenuInteractorProtocol {
   }
 
   func toggleTrackRecording() {
-    trackRecorder.processAction(trackRecorder.recordingState == .active ? .stop : .start) { [weak self] in
-      self?.close()
+    close()
+    let mapViewController = MapViewController.shared()!
+    switch trackRecorder.recordingState {
+    case .active:
+      mapViewController.showTrackRecordingPlacePage()
+    case .inactive:
+      trackRecorder.start { result in
+        switch result {
+        case .success:
+          mapViewController.showTrackRecordingPlacePage()
+        case .failure:
+          break
+        }
+      }
     }
   }
 }

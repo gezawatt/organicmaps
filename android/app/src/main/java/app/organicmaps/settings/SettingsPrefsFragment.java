@@ -13,25 +13,28 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.TwoStatePreference;
-import app.organicmaps.Framework;
+import app.organicmaps.sdk.Framework;
+import app.organicmaps.MwmApplication;
 import app.organicmaps.R;
-import app.organicmaps.downloader.MapManager;
+import app.organicmaps.sdk.downloader.MapManager;
 import app.organicmaps.downloader.OnmapDownloader;
-import app.organicmaps.editor.OsmOAuth;
+import app.organicmaps.sdk.editor.OsmOAuth;
 import app.organicmaps.editor.LanguagesFragment;
 import app.organicmaps.editor.ProfileActivity;
-import app.organicmaps.editor.data.Language;
+import app.organicmaps.sdk.editor.data.Language;
 import app.organicmaps.help.HelpActivity;
-import app.organicmaps.location.LocationHelper;
-import app.organicmaps.location.LocationProviderFactory;
+import app.organicmaps.sdk.location.LocationHelper;
+import app.organicmaps.sdk.location.LocationProviderFactory;
 import app.organicmaps.sdk.routing.RoutingOptions;
-import app.organicmaps.util.Config;
-import app.organicmaps.util.NetworkPolicy;
-import app.organicmaps.util.PowerManagment;
-import app.organicmaps.util.SharedPropertiesUtils;
-import app.organicmaps.util.ThemeSwitcher;
+import app.organicmaps.sdk.settings.MapLanguageCode;
+import app.organicmaps.sdk.settings.UnitLocale;
+import app.organicmaps.sdk.util.Config;
+import app.organicmaps.sdk.util.NetworkPolicy;
+import app.organicmaps.sdk.util.PowerManagment;
+import app.organicmaps.sdk.util.SharedPropertiesUtils;
+import app.organicmaps.sdk.util.ThemeSwitcher;
 import app.organicmaps.util.Utils;
-import app.organicmaps.util.log.LogsManager;
+import app.organicmaps.sdk.util.log.LogsManager;
 import app.organicmaps.sdk.search.SearchRecents;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -263,7 +266,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
         @Override
         public boolean onPreferenceChange(@NonNull Preference preference, Object newValue)
         {
-          final LocationHelper locationHelper = LocationHelper.from(requireContext());
+          final LocationHelper locationHelper = MwmApplication.from(requireContext()).getLocationHelper();
           boolean oldVal = Config.useGoogleServices();
           boolean newVal = (Boolean) newValue;
           if (oldVal != newVal)
@@ -317,7 +320,9 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
     disableOrEnable3DBuildingsForPowerMode(powerManagementValue);
 
     pref.setOnPreferenceChangeListener((preference, newValue) -> {
-      Framework.nativeSet3dMode(_3d.enabled, (Boolean)newValue);
+      Framework.Params3dMode current = new Framework.Params3dMode();
+      Framework.nativeGet3dMode(current);
+      Framework.nativeSet3dMode(current.enabled, (Boolean)newValue);
       return true;
     });
   }
@@ -356,7 +361,9 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
     pref.setChecked(_3d.enabled);
 
     pref.setOnPreferenceChangeListener((preference, newValue) -> {
-      Framework.nativeSet3dMode((Boolean) newValue, _3d.buildings);
+      Framework.Params3dMode current = new Framework.Params3dMode();
+      Framework.nativeGet3dMode(current);
+      Framework.nativeSet3dMode((Boolean) newValue, current.buildings);
       return true;
     });
   }
@@ -515,12 +522,5 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment implements La
       }
       return AUTO;
     }
-  }
-
-  public enum SpeedCameraMode
-  {
-    AUTO,
-    ALWAYS,
-    NEVER
   }
 }

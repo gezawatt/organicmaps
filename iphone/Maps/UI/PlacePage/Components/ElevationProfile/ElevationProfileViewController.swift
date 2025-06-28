@@ -3,12 +3,13 @@ import Chart
 protocol ElevationProfileViewProtocol: AnyObject {
   var presenter: ElevationProfilePresenterProtocol?  { get set }
 
+  var userInteractionEnabled: Bool { get set }
   var isChartViewHidden: Bool { get set }
   var isChartViewInfoHidden: Bool { get set }
 
   func setChartData(_ data: ChartPresentationData)
-  func setActivePoint(_ distance: Double)
-  func setMyPosition(_ distance: Double)
+  func setActivePointDistance(_ distance: Double)
+  func setMyPositionDistance(_ distance: Double)
   func reloadDescription()
 }
 
@@ -62,7 +63,7 @@ final class ElevationProfileViewController: UIViewController {
 // MARK: - Private methods
 
   private func setupViews() {
-    view.styleName = "Background"
+    view.setStyle(.background)
     setupDescriptionCollectionView()
     setupChartView()
   }
@@ -83,6 +84,8 @@ final class ElevationProfileViewController: UIViewController {
     descriptionCollectionView.isScrollEnabled = false
     descriptionCollectionView.contentInset = Constants.descriptionCollectionViewContentInsets
     descriptionCollectionView.translatesAutoresizingMaskIntoConstraints = false
+    descriptionCollectionView.showsHorizontalScrollIndicator = false
+    descriptionCollectionView.showsVerticalScrollIndicator = false
   }
 
   private func layoutViews() {
@@ -116,6 +119,12 @@ final class ElevationProfileViewController: UIViewController {
 // MARK: - ElevationProfileViewProtocol
 
 extension ElevationProfileViewController: ElevationProfileViewProtocol {
+
+  var userInteractionEnabled: Bool {
+    get { chartView.isUserInteractionEnabled }
+    set { chartView.isUserInteractionEnabled = newValue }
+  }
+
   var isChartViewHidden: Bool {
     get { chartView.isHidden }
     set {
@@ -134,11 +143,11 @@ extension ElevationProfileViewController: ElevationProfileViewProtocol {
     chartView.chartData = data
   }
 
-  func setActivePoint(_ distance: Double) {
+  func setActivePointDistance(_ distance: Double) {
     chartView.setSelectedPoint(distance)
   }
 
-  func setMyPosition(_ distance: Double) {
+  func setMyPositionDistance(_ distance: Double) {
     chartView.myPosition = distance
   }
 
