@@ -1041,7 +1041,6 @@ node|z17-[aeroway=gate],
 area|z17-[aeroway=gate],
 node|z17-[sport],
 area|z17-[sport],
-node|z17-[highway=ladder],
 node|z18-[amenity=dojo],
 area|z18-[amenity=dojo],
 node|z18-[amenity=vending_machine],
@@ -1073,6 +1072,8 @@ node|z18-[shop=lottery],
 node|z18-[shop=hearing_aids],
 node|z18-[man_made=chimney],
 area|z18-[man_made=chimney],
+node|z18-[man_made=crane],
+area|z18-[man_made=crane],
 node|z18-[man_made=silo],
 area|z18-[man_made=silo],
 node|z18-[man_made=storage_tank],
@@ -1505,6 +1506,9 @@ node|z15-[landuse=industrial][industrial=mine],
 area|z15-[landuse=industrial][industrial=mine]
 {icon-image: mine-m.svg;text-offset: 1;font-size: 10;}
 
+area|z17-[landuse=plant_nursery],
+{icon-image: plant_nursery-m.svg; text-offset: 1;}
+
 node|z16-[leisure=water_park],
 area|z16-[leisure=water_park]
 {icon-image: swimming-m.svg;icon-min-distance: 30;}
@@ -1556,7 +1560,7 @@ node|z16-[barrier=entrance],
 {icon-image: entrance-barrier-s.svg; font-size: 11;}
 
 node|z17-[highway=ladder],
-{icon-image: ladder-m.svg;font-size: 11;}
+{icon-image: ladder-s.svg;}
 
 node|z16-[barrier=gate],
 node|z16-[barrier=kissing_gate],
@@ -1838,6 +1842,10 @@ node|z16-[man_made=chimney],
 area|z16-[man_made=chimney],
 {icon-image: chimney-m.svg;font-size: 11;}
 
+node|z16-[man_made=crane],
+area|z16-[man_made=crane],
+{icon-image: crane-m.svg;font-size: 11;}
+
 node|z16-[man_made=works],
 area|z16-[man_made=works]
 {icon-image: factory-m.svg;font-size: 11;}
@@ -1853,6 +1861,8 @@ node|z18-[amenity=bbq],
 area|z18-[amenity=bbq]
 {icon-image: bbq-m.svg;font-size: 11;}
 
+node|z17[leisure=firepit],
+{text: none}
 node|z18-[leisure=firepit],
 {icon-image: firepit-m.svg;font-size: 11;}
 

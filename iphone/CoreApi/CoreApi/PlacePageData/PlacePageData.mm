@@ -5,6 +5,7 @@
 #import "PlacePageInfoData+Core.h"
 #import "PlacePageBookmarkData+Core.h"
 #import "PlacePageTrackData+Core.h"
+#import "ElevationProfileData+Core.h"
 #import "MWMMapNodeAttributes.h"
 
 #include <CoreApi/CoreApi.h>
@@ -30,6 +31,9 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
   m2::PointD m_mercator;
   std::vector<std::string> m_rawTypes;
 }
+
+@property(nonatomic, readwrite) PlacePagePreviewData *previewData;
+@property(nonatomic, readwrite) CLLocationCoordinate2D locationCoordinate;
 
 @end
 
@@ -66,7 +70,10 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
     if (rawData().IsTrack()) {
       _objectType = PlacePageObjectTypeTrack;
       auto const & track = GetFramework().GetBookmarkManager().GetTrack(rawData().GetTrackId());
-      _trackData = [[PlacePageTrackData alloc] initWithTrack:*track];
+      __weak auto weakSelf = self;
+      _trackData = [[PlacePageTrackData alloc] initWithTrack:*track onActivePointChanged:^(void) {
+        [weakSelf handleActiveTrackSelectionPointChanged];
+      }];
       _isPreviewPlus = track->HasAltitudes();
     }
     _previewData = [[PlacePagePreviewData alloc] initWithRawData:rawData()];
@@ -82,6 +89,39 @@ static PlacePageRoadType convertRoadType(RoadWarningMarkType roadType) {
     m_rawTypes = rawData().GetRawTypes();
   }
   return self;
+}
+
+- (instancetype)initWithTrackInfo:(TrackInfo * _Nonnull)trackInfo elevationInfo:(ElevationProfileData * _Nullable)elevationInfo {
+  self = [super init];
+  if (self) {
+    _objectType = PlacePageObjectTypeTrackRecording;
+    _roadType = PlacePageRoadTypeNone;
+    _previewData = [[PlacePagePreviewData alloc] initWithTrackInfo:trackInfo];
+    __weak auto weakSelf = self;
+    _trackData = [[PlacePageTrackData alloc] initWithTrackInfo:trackInfo
+                                                 elevationInfo:elevationInfo
+                                          onActivePointChanged:^(void) {
+      [weakSelf handleActiveTrackSelectionPointChanged];
+    }];
+  }
+  return self;
+}
+
+- (void)updateWithTrackInfo:(TrackInfo * _Nonnull)trackInfo elevationInfo:(ElevationProfileData * _Nullable)elevationInfo {
+  _previewData = [[PlacePagePreviewData alloc] initWithTrackInfo:trackInfo];
+  _trackData.trackInfo = trackInfo;
+  _trackData.elevationProfileData = elevationInfo;
+  if (self.onTrackRecordingProgressUpdate != nil)
+    self.onTrackRecordingProgressUpdate();
+}
+
+- (void)handleActiveTrackSelectionPointChanged {
+  if (!self || !rawData().IsTrack())
+    return;
+  auto const & trackInfo = GetFramework().GetBookmarkManager().GetTrackSelectionInfo(rawData().GetTrackId());
+  auto const latlon = mercator::ToLatLon(trackInfo.m_trackPoint);
+  _locationCoordinate = CLLocationCoordinate2DMake(latlon.m_lat, latlon.m_lon);
+  self.previewData = [[PlacePagePreviewData alloc] initWithRawData:rawData()];
 }
 
 - (void)dealloc {

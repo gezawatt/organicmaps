@@ -1,10 +1,14 @@
 import Chart
 import CoreApi
 
-protocol ElevationProfilePresenterProtocol: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-  func configure()
-  func update(trackInfo: TrackInfo, profileData: ElevationProfileData?)
+protocol TrackActivePointPresenter: AnyObject {
+  func updateActivePointDistance(_ distance: Double)
+  func updateMyPositionDistance(_ distance: Double)
+}
 
+protocol ElevationProfilePresenterProtocol: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, TrackActivePointPresenter {
+  func configure()
+  func update(with trackData: PlacePageTrackData)
   func onDifficultyButtonPressed()
   func onSelectedPointChanged(_ point: CGFloat)
 }
@@ -16,14 +20,13 @@ protocol ElevationProfileViewControllerDelegate: AnyObject {
 
 fileprivate struct DescriptionsViewModel {
   let title: String
-  let value: UInt
+  let value: String
   let imageName: String
 }
 
 final class ElevationProfilePresenter: NSObject {
   private weak var view: ElevationProfileViewProtocol?
-  private var trackInfo: TrackInfo
-  private var profileData: ElevationProfileData?
+  private var trackData: PlacePageTrackData
   private let delegate: ElevationProfileViewControllerDelegate?
   private let bookmarkManager: BookmarksManager = .shared()
 
@@ -33,19 +36,17 @@ final class ElevationProfilePresenter: NSObject {
   private let formatter: ElevationProfileFormatter
 
   init(view: ElevationProfileViewProtocol,
-       trackInfo: TrackInfo,
-       profileData: ElevationProfileData?,
+       trackData: PlacePageTrackData,
        formatter: ElevationProfileFormatter = ElevationProfileFormatter(),
        delegate: ElevationProfileViewControllerDelegate?) {
     self.view = view
     self.delegate = delegate
     self.formatter = formatter
-    self.trackInfo = trackInfo
-    self.profileData = profileData
-    if let profileData {
+    self.trackData = trackData
+    if let profileData = trackData.elevationProfileData {
       self.chartData = ElevationProfileChartData(profileData)
     }
-    self.descriptionModels = Self.descriptionModels(for: trackInfo)
+    self.descriptionModels = Self.descriptionModels(for: trackData.trackInfo)
   }
 
   private static func descriptionModels(for trackInfo: TrackInfo) -> [DescriptionsViewModel] {
@@ -56,43 +57,52 @@ final class ElevationProfilePresenter: NSObject {
       DescriptionsViewModel(title: L("elevation_profile_min_elevation"), value: trackInfo.minElevation, imageName: "ic_em_min_attitude_24")
     ]
   }
-
-  deinit {
-    bookmarkManager.resetElevationActivePointChanged()
-    bookmarkManager.resetElevationMyPositionChanged()
-  }
 }
 
 extension ElevationProfilePresenter: ElevationProfilePresenterProtocol {
-  func update(trackInfo: TrackInfo, profileData: ElevationProfileData?) {
-    self.profileData = profileData
-    if let profileData {
+  func update(with trackData: PlacePageTrackData) {
+    self.trackData = trackData
+    if let profileData = trackData.elevationProfileData {
       self.chartData = ElevationProfileChartData(profileData)
     } else {
       self.chartData = nil
     }
-    descriptionModels = Self.descriptionModels(for: trackInfo)
+    descriptionModels = Self.descriptionModels(for: trackData.trackInfo)
     configure()
   }
 
+  func updateActivePointDistance(_ distance: Double) {
+    guard let view, !view.isChartViewInfoHidden else { return }
+    view.setActivePointDistance(distance)
+  }
+
+  func updateMyPositionDistance(_ distance: Double) {
+    guard let view, !view.isChartViewInfoHidden else { return }
+    view.setMyPositionDistance(distance)
+  }
+
   func configure() {
+    view?.isChartViewHidden = false
+
     let kMinPointsToDraw = 3
-    guard let profileData, let chartData, chartData.points.count >= kMinPointsToDraw else {
-      view?.isChartViewHidden = true
+    guard let profileData = trackData.elevationProfileData,
+          let chartData,
+          chartData.points.count >= kMinPointsToDraw else {
+      view?.userInteractionEnabled = false
       return
     }
-    view?.isChartViewHidden = false
+
     view?.setChartData(ChartPresentationData(chartData, formatter: formatter))
     view?.reloadDescription()
+    view?.userInteractionEnabled = true
 
-    view?.setActivePoint(profileData.activePoint)
-    view?.setMyPosition(profileData.myPosition)
-    bookmarkManager.setElevationActivePointChanged(profileData.trackId) { [weak self] distance in
-      self?.view?.setActivePoint(distance)
+    guard !profileData.isTrackRecording else {
+      view?.isChartViewInfoHidden = true
+      return
     }
-    bookmarkManager.setElevationMyPositionChanged(profileData.trackId) { [weak self] distance in
-      self?.view?.setMyPosition(distance)
-    }
+
+    view?.setActivePointDistance(trackData.activePointDistance)
+    view?.setMyPositionDistance(trackData.myPositionDistance)
   }
 
   func onDifficultyButtonPressed() {
@@ -117,7 +127,7 @@ extension ElevationProfilePresenter {
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(cell: ElevationProfileDescriptionCell.self, indexPath: indexPath)
     let model = descriptionModels[indexPath.row]
-    cell.configure(subtitle: model.title, value: formatter.yAxisString(from: Double(model.value)), imageName: model.imageName)
+    cell.configure(subtitle: model.title, value: model.value, imageName: model.imageName)
     return cell
   }
 }
@@ -129,7 +139,7 @@ extension ElevationProfilePresenter {
     let width = collectionView.width
     let cellHeight = collectionView.height
     let modelsCount = CGFloat(descriptionModels.count)
-    let cellWidth = (width - cellSpacing * (modelsCount - 1) - collectionView.contentInset.right) / modelsCount
+    let cellWidth = (width - cellSpacing * (modelsCount - 1) - collectionView.contentInset.right - collectionView.contentInset.left) / modelsCount
     return CGSize(width: cellWidth, height: cellHeight)
   }
 

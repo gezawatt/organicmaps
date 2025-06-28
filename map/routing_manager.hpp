@@ -142,6 +142,7 @@ public:
   // This method was added because we do not want to break the behaviour that is familiar to our
   // users.
   bool DisableFollowMode();
+  kml::TrackId SaveRoute();
 
   void SetRouteBuildingListener(RouteBuildingCallback const & buildingCallback)
   {
@@ -204,7 +205,7 @@ public:
     return m_routingSession.GetTurnNotificationsLocale();
   }
   // @return polyline of the route.
-  routing::FollowedPolyline const & GetRoutePolylineForTests() const
+  routing::FollowedPolyline const & GetRoutePolyline() const
   {
     return m_routingSession.GetRouteForTests()->GetFollowedPolyline();
   }
@@ -226,7 +227,7 @@ public:
   /// will not return previous data, only newer.
   void GenerateNotifications(std::vector<std::string> & notifications, bool announceStreets);
 
-  void AddRoutePoint(RouteMarkData && markData);
+  void AddRoutePoint(RouteMarkData && markData, bool reorderIntermediatePoints = true);
   void ContinueRouteToPoint(RouteMarkData && markData);
   std::vector<RouteMarkData> GetRoutePoints() const;
   size_t GetRoutePointsCount() const;

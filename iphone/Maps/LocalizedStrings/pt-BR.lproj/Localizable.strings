@@ -43,7 +43,7 @@
 "country_status_download_failed" = "O download falhou";
 
 /* Text in About screen */
-"about_headline" = "Grátis para todos, feito com amor";
+"about_headline" = "Livre para todos, feito com amor";
 
 /* Text in About screen */
 "about_proposition_1" = "• Sem anúncios, rastreamento ou coleta de dados";
@@ -232,7 +232,7 @@
 "pref_tts_enable_title" = "Orientação por voz";
 
 /* Settings «Route» category: «Tts announce street names» title */
-"pref_tts_street_names_title" = "Anunciar nomes de ruas";
+"pref_tts_street_names_title" = "Anunciar Nomes de Ruas";
 
 /* Settings «Route» category: «Tts announce street names» description */
 "pref_tts_street_names_description" = "Quando ativado, o nome da rua ou saída para virar será falado em voz alta.";
@@ -241,7 +241,7 @@
 "pref_tts_language_title" = "Idioma da voz";
 
 /* Settings «Route» category: «Test Voice Directions» title */
-"pref_tts_test_voice_title" = "Testar instruções de voz (TTS, Text-To-Speech)";
+"pref_tts_test_voice_title" = "Testar Instruções de Voz (TTS, Text-To-Speech)";
 
 /* Title for "Other" section in TTS settings. */
 "pref_tts_other_section_title" = "Outro";
@@ -274,7 +274,7 @@
 "help" = "Ajuda";
 
 /* Button in the main Help dialog */
-"faq" = "Perguntas frequentes";
+"faq" = "Perguntas Frequentes";
 
 /* Button in the main menu */
 "donate" = "Doar";
@@ -282,8 +282,8 @@
 /* Tex label above the Donate button */
 "donate_description" = "Doe para criarmos juntos os melhores mapas!";
 "already_donated" = "Já doei";
-"remind_me_later" = "Lembre-me mais tarde";
-"support_organic_maps" = "Apoie o Organic Maps";
+"remind_me_later" = "Lembrar mais tarde";
+"support_organic_maps" = "Apoiar Organic Maps";
 
 /* Button in the main Help dialog */
 "copyright" = "Direitos autorais";
@@ -310,7 +310,7 @@
 "pref_calibration_title" = "Calibração da bússola";
 
 /* Toast text when user hides UI with a long tap anywhere on the map */
-"long_tap_toast" = "Dê um toque longo no mapa novamente para ver a interface";
+"long_tap_toast" = "Toque longamente no mapa novamente para ver a interface";
 
 /* Update all button text */
 "downloader_update_all_button" = "Atualizar tudo";
@@ -341,7 +341,7 @@
 "downloader_delete_map_while_routing_dialog" = "Favor parar a navegação para apagar o mapa.";
 
 /* PointsInDifferentMWM */
-"routing_failed_cross_mwm_building" = "Só podem ser criadas rotas que estejam completamente contidas em um único mapa.";
+"routing_failed_cross_mwm_building" = "Só podem ser criadas rotas que estejam totalmente contidas em um mapa de uma única região.";
 
 /* Context menu item for downloader. */
 "downloader_download_map" = "Baixar o mapa";
@@ -431,8 +431,8 @@
 "dialog_routing_change_end" = "Ajuste o ponto de chegada";
 "dialog_routing_end_not_determined" = "A rota não foi traçada, pois não foi possível localizar o ponto de chegada.";
 "dialog_routing_select_closer_end" = "Selecione um ponto de chegada mais perto de uma estrada.";
-"dialog_routing_change_intermediate" = "Não foi possível localizar o ponto intermédio.";
-"dialog_routing_intermediate_not_determined" = "Ajuste seu ponto intermédio.";
+"dialog_routing_change_intermediate" = "Incapaz de localizar o ponto intermediário.";
+"dialog_routing_intermediate_not_determined" = "Por favor, ajuste seu ponto intermediário.";
 "dialog_routing_system_error" = "Erro de sistema";
 "dialog_routing_application_error" = "Não foi possível traçar uma rota devido a um erro no aplicativo.";
 "dialog_routing_try_again" = "Por favor, tente novamente";
@@ -474,20 +474,20 @@
 "p2p_to_here" = "Para";
 "p2p_only_from_current" = "Só é possível navegar a partir da sua localização atual.";
 "p2p_reroute_from_current" = "Deseja planejar uma rota a partir da sua localização atual?";
-"editor_time_add" = "Adicionar horário";
-"editor_time_delete" = "Apagar horário";
+"editor_time_add" = "Adicionar Agendamento";
+"editor_time_delete" = "Apagar Agendamento";
 
 /* Text for allday switch. */
 "editor_time_allday" = "O dia todo (24 horas)";
 "editor_time_open" = "Aberto";
 "editor_time_close" = "Fechado";
-"editor_time_add_closed" = "Inserir horas sem funcionamento";
-"editor_time_title" = "Horário de funcionamento";
-"editor_time_advanced" = "Modo avançado";
-"editor_time_simple" = "Modo simples";
-"editor_hours_closed" = "Horas sem funcionamento";
-"editor_example_values" = "Valores de exemplo";
-"editor_add_select_location" = "Selecione a localização";
+"editor_time_add_closed" = "Adicionar Horários Não Comerciais";
+"editor_time_title" = "Horários Comerciais";
+"editor_time_advanced" = "Modo Avançado";
+"editor_time_simple" = "Modo Simples";
+"editor_hours_closed" = "Horários Não Comerciais";
+"editor_example_values" = "Exemplo de Valores";
+"editor_add_select_location" = "Selecionar Localização";
 "editor_done_dialog_1" = "Você modificou o mapa-múndi. Não esconda isto! Diga aos seus amigos e edite junto com eles.";
 "share_with_friends" = "Compartilhar com amigos";
 "editor_report_problem_send_button" = "Enviar";
@@ -664,7 +664,7 @@
 /* Dialog before publishing the modifications to the public map. */
 "editor_share_to_all_dialog_message_1" = "Certifique-se de não ter incluído nenhum dado pessoal.";
 "editor_share_to_all_dialog_message_2" = "Os editores do OpenStreetMap verificarão as mudanças e entrarão em contato com você se tiverem alguma dúvida.";
-"navigation_stop_button" = "Parar";
+"navigation_stop_button" = "Pare";
 
 /* iOS dialog for the case when recent track recording is on and the app comes back from background */
 "recent_track_background_dialog_title" = "Desativar gravação da sua rota recente?";
@@ -1059,4 +1059,5 @@
 
 /* Message for the toast when saving the track recording is finished but nothing to save. */
 "track_recording_toast_nothing_to_save" = "A trilha está vazia - não há nada para salvar";
-"edit_track" = "Editar trilha";
+"edit_track" = "Editar trajeto";
+"saved" = "Salvo";

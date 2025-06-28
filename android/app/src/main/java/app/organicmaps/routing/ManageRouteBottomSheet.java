@@ -16,12 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import app.organicmaps.Framework;
+import app.organicmaps.sdk.Framework;
 import app.organicmaps.MwmApplication;
 import app.organicmaps.R;
-import app.organicmaps.bookmarks.data.MapObject;
+import app.organicmaps.sdk.bookmarks.data.MapObject;
 import app.organicmaps.sdk.routing.RouteMarkData;
-import app.organicmaps.util.UiUtils;
+import app.organicmaps.sdk.util.UiUtils;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -141,42 +141,9 @@ public class ManageRouteBottomSheet extends BottomSheetDialogFragment
       // Secondly, add the starting point.
       Framework.addRoutePoint(newRoutePoints.get(0));
 
-      // And then, add all intermediate points.
+      // And then, add all intermediate points (with no reordering).
       for (int pos = 1; pos < newRoutePoints.size() - 1; pos++)
-        Framework.addRoutePoint(newRoutePoints.get(pos));
-
-      // Intermediate route points are added sorted by distance.
-      // We have to make sure that they follow the requested order.
-      RouteMarkData[] finalRoutePoints = Framework.nativeGetRoutePoints();
-
-      for (int first = 1; first < newRoutePoints.size() - 1; first++)
-      {
-        int secondIndex = -1;
-
-        for (int second = first; second < newRoutePoints.size() - 1; second++)
-        {
-          if (finalRoutePoints[first].equals(newRoutePoints.get(second)))
-          {
-            secondIndex = second;
-            break;
-          }
-        }
-
-        if (secondIndex < 0)
-        {
-          // Something went bad. Intermediate point not found in the route points.
-          break;
-        }
-
-        if (first != secondIndex)
-        {
-          // Intermediate point needs to be moved.
-          Framework.nativeMoveRoutePoint(secondIndex, first);
-
-          // Refresh final route points.
-          finalRoutePoints = Framework.nativeGetRoutePoints();
-        }
-      }
+        Framework.addRoutePoint(newRoutePoints.get(pos), false);
 
       // Launch route planning.
       RoutingController.get().launchPlanning();

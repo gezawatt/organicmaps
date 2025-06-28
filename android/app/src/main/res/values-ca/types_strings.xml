@@ -355,7 +355,7 @@
     <string name="type.shop.fashion_accessories">Complements de moda</string>
     <string name="type.shop.gas">Botiga de gas</string>
     <string name="type.shop.hearing_aids">Botiga d’aparells auditius</string>
-    <string name="type.shop.herbalist">Botiga d\'herbes</string>
+    <string name="type.shop.herbalist">Herbolari</string>
     <string name="type.shop.hifi">Àudio HiFi</string>
     <string name="type.shop.motorcycle_repair">Reparació de motos</string>
     <string name="type.shop.outpost">Punt de recollida</string>
@@ -976,4 +976,19 @@
     <string name="type.man_made.pier">Moll</string>
     <string name="type.man_made.pipeline">Ducte</string>
     <string name="type.man_made.pipeline.overground">Ducte a cel obert</string>
+    <string name="type.sport.diving">Salts</string>
+    <string name="type.sport.handball">Handbol</string>
+    <string name="type.sport.golf">Golf</string>
+    <string name="type.sport.table_tennis">Tennis de taula</string>
+    <string name="type.sport.tennis">Pista de tennis</string>
+    <string name="type.sport.volleyball">Voleibol</string>
+    <string name="type.shop.garden_centre">Centre de jardineria</string>
+    <string name="type.sport.skateboard">Monopatinatge</string>
+    <string name="type.sport.padel">Pàdel</string>
+    <string name="type.sport.skiing">Esquí</string>
+    <string name="type.sport.soccer">Futbol</string>
+    <string name="type.shop.hairdresser">Perruqueria</string>
+    <string name="type.shop.hardware">Ferreteria</string>
+    <string name="type.shop.grocery">Botiga de queviures</string>
+    <string name="type.man_made.crane">Grua</string>
 </resources>

@@ -841,7 +841,7 @@ bool RoutingManager::CouldAddIntermediatePoint() const
     < RoutePointsLayout::kMaxIntermediatePointsCount + 2;
 }
 
-void RoutingManager::AddRoutePoint(RouteMarkData && markData)
+void RoutingManager::AddRoutePoint(RouteMarkData && markData, bool reorderIntermediatePoints)
 {
   ASSERT(m_bmManager != nullptr, ());
   RoutePointsLayout routePoints(*m_bmManager);
@@ -859,7 +859,9 @@ void RoutingManager::AddRoutePoint(RouteMarkData && markData)
 
   markData.m_isVisible = !markData.m_isMyPosition;
   routePoints.AddRoutePoint(std::move(markData));
-  ReorderIntermediatePoints();
+
+  if (reorderIntermediatePoints)
+    ReorderIntermediatePoints();
 }
 
 void RoutingManager::ContinueRouteToPoint(RouteMarkData && markData)
@@ -1087,6 +1089,37 @@ void RoutingManager::SetUserCurrentPosition(m2::PointD const & position)
       CancelRecommendation(Recommendation::RebuildAfterPointsLoading);
     }
   }
+}
+
+static std::string GetNameFromPoint(RouteMarkData const & rmd)
+{
+  if (rmd.m_subTitle.empty())
+    return "";
+  return rmd.m_title;
+}
+
+kml::TrackId RoutingManager::SaveRoute()
+{
+  std::vector<geometry::PointWithAltitude> junctions;
+  RoutingSession().GetRouteJunctionPoints(junctions);
+
+  junctions.erase(
+    std::unique(
+      junctions.begin(),
+      junctions.end(),
+      [](const geometry::PointWithAltitude & p1, const geometry::PointWithAltitude & p2)
+      {
+        return AlmostEqualAbs(p1, p2, kMwmPointAccuracy);
+      }
+    ),
+    junctions.end()
+  );
+
+  auto const routePoints = GetRoutePoints();
+  std::string const from = GetNameFromPoint(routePoints.front());
+  std::string const to = GetNameFromPoint(routePoints.back());
+
+  return m_bmManager->SaveRoute(junctions, from, to);
 }
 
 bool RoutingManager::DisableFollowMode()

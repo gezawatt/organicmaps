@@ -4,7 +4,6 @@ final class SearchOnMapInteractor: NSObject {
   private let searchManager: SearchManager.Type
   private let routeManager: MWMRouter.Type
   private var isUpdatesDisabled = false
-  private var showResultsOnMap: Bool = false
 
   var routingTooltipSearch: SearchOnMapRoutingTooltipSearch = .none
 
@@ -31,30 +30,44 @@ final class SearchOnMapInteractor: NSObject {
     switch event {
     case .openSearch:
       return .showHistoryAndCategory
+
     case .hideSearch:
       return .setSearchScreenHidden(true)
+
     case .didStartDraggingSearch:
       return .setIsTyping(false)
+
     case .didStartTyping:
       return .setIsTyping(true)
+
     case .didType(let searchText):
       return processTypedText(searchText)
+
     case .clearButtonDidTap:
       return processClearButtonDidTap()
+
     case .didSelect(let searchText):
       return processSelectedText(searchText)
+
     case .searchButtonDidTap(let searchText):
       return processSearchButtonDidTap(searchText)
+
     case .didSelectResult(let result, let query):
       return processSelectedResult(result, query: query)
+
     case .didSelectPlaceOnMap:
-      return isIPad ? .none : .setSearchScreenHidden(true)
+      return isiPad ? .none : .setSearchScreenHidden(true)
+
     case .didDeselectPlaceOnMap:
       return deselectPlaceOnMap()
+
     case .didStartDraggingMap:
       return .setSearchScreenCompact
+
     case .didUpdatePresentationStep(let step):
+      searchManager.setSearchMode(searchModeForPresentationStep(step))
       return .updatePresentationStep(step)
+
     case .closeSearch:
       return closeSearch()
     }
@@ -68,8 +81,6 @@ final class SearchOnMapInteractor: NSObject {
 
   private func processSearchButtonDidTap(_ query: SearchQuery) -> SearchOnMap.Response {
     searchManager.save(query)
-    showResultsOnMap = true
-    searchManager.showEverywhereSearchResultsOnMap()
     return .showOnTheMap
   }
 
@@ -81,9 +92,10 @@ final class SearchOnMapInteractor: NSObject {
 
   private func processSelectedText(_ query: SearchQuery) -> SearchOnMap.Response {
     isUpdatesDisabled = false
-    searchManager.save(query)
+    if query.source != .history {
+      searchManager.save(query)
+    }
     searchManager.searchQuery(query)
-    showResultsOnMap = true
     return .selectQuery(query)
   }
 
@@ -96,24 +108,24 @@ final class SearchOnMapInteractor: NSObject {
         searchManager.showResult(at: result.index)
       case .start:
         let point = MWMRoutePoint(cgPoint: result.point,
-                               title: result.titleText,
-                               subtitle: result.addressText,
-                               type: .start,
-                               intermediateIndex: 0)
+                                  title: result.titleText,
+                                  subtitle: result.addressText,
+                                  type: .start,
+                                  intermediateIndex: 0)
         routeManager.build(from: point, bestRouter: false)
       case .finish:
         let point = MWMRoutePoint(cgPoint: result.point,
-                               title: result.titleText,
-                               subtitle: result.addressText,
-                               type: .finish,
-                               intermediateIndex: 0)
+                                  title: result.titleText,
+                                  subtitle: result.addressText,
+                                  type: .finish,
+                                  intermediateIndex: 0)
         routeManager.build(to: point, bestRouter: false)
       @unknown default:
         fatalError("Unsupported routingTooltipSearch")
       }
-      return isIPad ? .none : .setSearchScreenHidden(true)
+      return isiPad ? .none : .setSearchScreenHidden(true)
     case .suggestion:
-      var suggestionQuery = SearchQuery(result.suggestion,
+      let suggestionQuery = SearchQuery(result.suggestion,
                                         locale: query.locale,
                                         source: result.isPureSuggest ? .suggestion : .typedText)
       searchManager.searchQuery(suggestionQuery)
@@ -125,33 +137,38 @@ final class SearchOnMapInteractor: NSObject {
 
   private func deselectPlaceOnMap() -> SearchOnMap.Response {
     routingTooltipSearch = .none
-    searchManager.showViewportSearchResultsOnMap()
     return .setSearchScreenHidden(false)
   }
 
   private func closeSearch() -> SearchOnMap.Response {
     routingTooltipSearch = .none
     isUpdatesDisabled = true
-    showResultsOnMap = false
     searchManager.clear()
     return .close
+  }
+
+  private func searchModeForPresentationStep(_ step: ModalPresentationStep) -> SearchMode {
+    switch step {
+    case .fullScreen:
+      return isiPad ? .everywhereAndViewport : .everywhere
+    case .halfScreen, .compact:
+      return  .everywhereAndViewport
+    case .hidden:
+      return  .viewport
+    }
   }
 }
 
 // MARK: - MWMSearchObserver
 extension SearchOnMapInteractor: MWMSearchObserver {
   func onSearchCompleted() {
-    guard !isUpdatesDisabled else { return }
+    guard !isUpdatesDisabled, searchManager.searchMode() != .viewport else { return }
     let results = searchManager.getResults()
-    if showResultsOnMap && !results.isEmpty {
-      searchManager.showEverywhereSearchResultsOnMap()
-      showResultsOnMap = false
-    }
     presenter.process(.showResults(SearchOnMap.SearchResults(results), isSearchCompleted: true))
   }
 
   func onSearchResultsUpdated() {
-    guard !isUpdatesDisabled else { return }
+    guard !isUpdatesDisabled, searchManager.searchMode() != .viewport else { return }
     let results = searchManager.getResults()
     guard !results.isEmpty else { return }
     presenter.process(.showResults(SearchOnMap.SearchResults(results), isSearchCompleted: false))

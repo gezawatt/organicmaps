@@ -24,14 +24,14 @@ import app.organicmaps.R;
 import app.organicmaps.base.BaseMwmDialogFragment;
 import app.organicmaps.bookmarks.ChooseBookmarkCategoryFragment;
 import app.organicmaps.bookmarks.ChooseBookmarkCategoryFragment.Listener;
-import app.organicmaps.bookmarks.data.BookmarkCategory;
-import app.organicmaps.bookmarks.data.BookmarkInfo;
-import app.organicmaps.bookmarks.data.BookmarkManager;
-import app.organicmaps.bookmarks.data.Icon;
-import app.organicmaps.bookmarks.data.Track;
+import app.organicmaps.sdk.bookmarks.data.BookmarkCategory;
+import app.organicmaps.sdk.bookmarks.data.BookmarkInfo;
+import app.organicmaps.sdk.bookmarks.data.BookmarkManager;
+import app.organicmaps.sdk.bookmarks.data.Icon;
+import app.organicmaps.sdk.bookmarks.data.Track;
 import app.organicmaps.util.Graphics;
 import app.organicmaps.util.InputUtils;
-import app.organicmaps.util.UiUtils;
+import app.organicmaps.sdk.util.UiUtils;
 import app.organicmaps.util.WindowInsetUtils.PaddingInsetsListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -207,17 +207,17 @@ public class EditBookmarkFragment extends BaseMwmDialogFragment implements View.
 
     ViewCompat.setOnApplyWindowInsetsListener(toolbar, PaddingInsetsListener.excludeBottom());
 
-    final ImageView imageView = toolbar.findViewById(R.id.save);
+    final TextView textView = toolbar.findViewById(R.id.save);
     switch (mType)
     {
       case TYPE_BOOKMARK ->
       {
-        imageView.setOnClickListener(v -> saveBookmark());
+        textView.setOnClickListener(v -> saveBookmark());
         toolbar.setTitle(R.string.placepage_edit_bookmark_button);
       }
       case TYPE_TRACK ->
       {
-        imageView.setOnClickListener(v -> saveTrack());
+        textView.setOnClickListener(v -> saveTrack());
         toolbar.setTitle(R.string.edit_track);
       }
     }
