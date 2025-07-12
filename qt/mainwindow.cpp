@@ -47,8 +47,11 @@
 
 #ifdef OMIM_OS_WINDOWS
 #include <windows.h>
-#define IDM_ABOUT_DIALOG        1001
-#define IDM_PREFERENCES_DIALOG  1002
+#define IDM_OPENSTREETMAP_LOGIN 1001
+#define IDM_UPLOAD_EDITS        1002
+#define IDM_ABOUT_DIALOG        1003
+#define IDM_PREFERENCES_DIALOG  1004
+
 #endif
 
 #ifndef NO_DOWNLOADER
@@ -155,20 +158,46 @@ MainWindow::MainWindow(Framework & framework,
   {
     // create items in the system menu
     HMENU menu = ::GetSystemMenu((HWND)winId(), FALSE);
+
     MENUITEMINFOA item;
     item.cbSize = sizeof(MENUITEMINFOA);
     item.fMask = MIIM_FTYPE | MIIM_ID | MIIM_STRING;
+
+    // OpenStreetMap Login
+    item.fType = MFT_STRING;
+    item.wID = IDM_OPENSTREETMAP_LOGIN;
+    QByteArray const loginStr = tr("OpenStreetMap Login...").toLocal8Bit();
+    item.dwTypeData = const_cast<char *>(loginStr.data());
+    item.cch = loginStr.size();
+    ::InsertMenuItemA(menu, ::GetMenuItemCount(menu) - 1, TRUE, &item);
+
+    // Upload Edits
+    item.wID = IDM_UPLOAD_EDITS;
+    QByteArray const uploadStr = tr("Upload Edits...").toLocal8Bit();
+    item.dwTypeData = const_cast<char *>(uploadStr.data());
+    item.cch = uploadStr.size();
+    ::InsertMenuItemA(menu, ::GetMenuItemCount(menu) - 1, TRUE, &item);
+
+    // Separator
+    item.fType = MFT_SEPARATOR;
+    ::InsertMenuItemA(menu, ::GetMenuItemCount(menu) - 1, TRUE, &item);
+
+    // Preferences
     item.fType = MFT_STRING;
     item.wID = IDM_PREFERENCES_DIALOG;
     QByteArray const prefsStr = tr("Preferences...").toLocal8Bit();
     item.dwTypeData = const_cast<char *>(prefsStr.data());
     item.cch = prefsStr.size();
     ::InsertMenuItemA(menu, ::GetMenuItemCount(menu) - 1, TRUE, &item);
+
+    // About
     item.wID = IDM_ABOUT_DIALOG;
     QByteArray const aboutStr = tr("About...").toLocal8Bit();
     item.dwTypeData = const_cast<char *>(aboutStr.data());
     item.cch = aboutStr.size();
     ::InsertMenuItemA(menu, ::GetMenuItemCount(menu) - 1, TRUE, &item);
+
+    // Final separator
     item.fType = MFT_SEPARATOR;
     ::InsertMenuItemA(menu, ::GetMenuItemCount(menu) - 1, TRUE, &item);
   }
@@ -223,6 +252,14 @@ bool MainWindow::nativeEvent(QByteArray const & eventType, void * message, qintp
   {
     switch (msg->wParam)
     {
+    case IDM_OPENSTREETMAP_LOGIN:
+      OnLoginMenuItem();
+      *result = 0;
+      return true;
+    case IDM_UPLOAD_EDITS:
+      OnUploadEditsMenuItem();
+      *result = 0;
+      return true;
     case IDM_PREFERENCES_DIALOG:
       OnPreferences();
       *result = 0;
