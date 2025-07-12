@@ -61,6 +61,35 @@ if (USE_CCACHE)
   endif()
 endif()
 
+option(COLORS_DISABLE "Disable colored compiler output" OFF)
+if (NOT DEFINED ENV{COLORS_DISABLE} AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  message(STATUS "export COLORS_DISABLE=1 or use -DCOLORS_DISABLE=ON to disable colored compiler output.")
+  add_compile_options($<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color=always> $<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics>)
+  add_link_options($<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color=always> $<$<CXX_COMPILER_ID:Clang,AppleClang>:-fcolor-diagnostics>)
+endif()
+
+option(WITH_SYSTEM_PROVIDED_3PARTY "Enable compilation with system provided dependencies" OFF)
+set(OMIM_ROOT ${CMAKE_SOURCE_DIR})
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+set(PLATFORM_DESKTOP TRUE)
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(PLATFORM_LINUX TRUE)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  set(PLATFORM_MAC TRUE)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  set(PLATFORM_WIN TRUE)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Android")
+  set(PLATFORM_ANDROID TRUE)
+  set(PLATFORM_DESKTOP FALSE)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "iOS")
+  set(PLATFORM_IPHONE TRUE)
+  set(PLATFORM_DESKTOP FALSE)
+else()
+  message(FATAL_ERROR "Unsupported platform: ${CMAKE_SYSTEM_NAME}")
+endif()
+
 if(${PLATFORM_MAC})
   set(XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)
 
@@ -177,6 +206,7 @@ if (PLATFORM_LINUX OR PLATFORM_WIN)
   find_package(ICU COMPONENTS uc i18n data REQUIRED)
   find_package(Freetype REQUIRED)
   find_package(harfbuzz REQUIRED)
+  find_package(Protobuf REQUIRED)
 endif()
 
 if (WITH_SYSTEM_PROVIDED_3PARTY)
@@ -190,6 +220,9 @@ if (WITH_SYSTEM_PROVIDED_3PARTY)
 endif()
 
 find_package(ZLIB REQUIRED)
+
+find_package(Boost CONFIG REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 
 # Include 3party dependencies.
 add_subdirectory(3party)
