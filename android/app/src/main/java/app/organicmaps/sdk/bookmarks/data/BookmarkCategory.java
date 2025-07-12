@@ -2,13 +2,11 @@ package app.organicmaps.sdk.bookmarks.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
-
-import app.organicmaps.R;
+import app.organicmaps.sdk.R;
 
 // Used by JNI.
 @Keep
@@ -26,9 +24,8 @@ public class BookmarkCategory implements Parcelable
   private final int mBookmarksCount;
   private boolean mIsVisible;
 
-  public BookmarkCategory(long id, @NonNull String name, @NonNull String annotation,
-                          @NonNull String description, int tracksCount, int bookmarksCount,
-                           boolean isVisible)
+  public BookmarkCategory(long id, @NonNull String name, @NonNull String annotation, @NonNull String description,
+                          int tracksCount, int bookmarksCount, boolean isVisible)
   {
     mId = id;
     mName = name;
@@ -42,8 +39,10 @@ public class BookmarkCategory implements Parcelable
   @Override
   public boolean equals(Object o)
   {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
     BookmarkCategory that = (BookmarkCategory) o;
     return mId == that.mId;
   }
@@ -51,7 +50,7 @@ public class BookmarkCategory implements Parcelable
   @Override
   public int hashCode()
   {
-    return (int)(mId ^ (mId >>> 32));
+    return (int) (mId ^ (mId >>> 32));
   }
 
   public long getId()
@@ -147,8 +146,7 @@ public class BookmarkCategory implements Parcelable
     this.mIsVisible = in.readByte() != 0;
   }
 
-  public static final Creator<BookmarkCategory> CREATOR = new Creator<>()
-  {
+  public static final Creator<BookmarkCategory> CREATOR = new Creator<>() {
     @Override
     public BookmarkCategory createFromParcel(Parcel source)
     {
@@ -164,10 +162,10 @@ public class BookmarkCategory implements Parcelable
 
   public enum AccessRules
   {
-    ACCESS_RULES_LOCAL(R.string.not_shared, R.drawable.ic_lock),
-    ACCESS_RULES_PUBLIC(R.string.public_access, R.drawable.ic_public_inline),
-    ACCESS_RULES_DIRECT_LINK(R.string.limited_access, R.drawable.ic_link_inline),
-    ACCESS_RULES_AUTHOR_ONLY(R.string.access_rules_author_only, R.drawable.ic_lock);
+    ACCESS_RULES_LOCAL(app.organicmaps.R.string.not_shared, R.drawable.ic_lock),
+    ACCESS_RULES_PUBLIC(app.organicmaps.R.string.public_access, R.drawable.ic_public_inline),
+    ACCESS_RULES_DIRECT_LINK(app.organicmaps.R.string.limited_access, R.drawable.ic_link_inline),
+    ACCESS_RULES_AUTHOR_ONLY(app.organicmaps.R.string.access_rules_author_only, R.drawable.ic_lock);
 
     private final int mResId;
     private final int mDrawableResId;

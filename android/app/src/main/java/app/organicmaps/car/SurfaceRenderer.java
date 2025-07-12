@@ -4,7 +4,6 @@ import static app.organicmaps.sdk.display.DisplayType.Car;
 
 import android.graphics.Rect;
 import android.view.Surface;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.car.app.AppManager;
@@ -15,12 +14,11 @@ import androidx.car.app.SurfaceContainer;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
-
+import app.organicmaps.MwmApplication;
+import app.organicmaps.R;
 import app.organicmaps.sdk.Framework;
 import app.organicmaps.sdk.Map;
 import app.organicmaps.sdk.MapRenderingListener;
-import app.organicmaps.R;
-import app.organicmaps.sdk.display.DisplayManager;
 import app.organicmaps.sdk.settings.UnitLocale;
 import app.organicmaps.sdk.util.concurrency.UiThread;
 import app.organicmaps.sdk.util.log.Logger;
@@ -58,12 +56,9 @@ public class SurfaceRenderer implements DefaultLifecycleObserver, SurfaceCallbac
       mSurface.release();
     mSurface = surfaceContainer.getSurface();
 
-    mMap.onSurfaceCreated(
-        mCarContext,
-        mSurface,
-        new Rect(0, 0, surfaceContainer.getWidth(), surfaceContainer.getHeight()),
-        surfaceContainer.getDpi()
-    );
+    mMap.onSurfaceCreated(mCarContext, mSurface,
+                          new Rect(0, 0, surfaceContainer.getWidth(), surfaceContainer.getHeight()),
+                          surfaceContainer.getDpi());
     mMap.updateBottomWidgetsOffset(mCarContext, -1, -1);
   }
 
@@ -121,7 +116,7 @@ public class SurfaceRenderer implements DefaultLifecycleObserver, SurfaceCallbac
   {
     Logger.d(TAG);
     mMap.onResume();
-    if (DisplayManager.from(mCarContext).isCarDisplayUsed())
+    if (MwmApplication.from(mCarContext).getDisplayManager().isCarDisplayUsed())
       UiThread.runLater(() -> mMap.updateMyPositionRoutingOffset(0));
   }
 

@@ -1,13 +1,12 @@
 package app.organicmaps.background;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.work.Constraints;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import app.organicmaps.MwmApplication;
@@ -17,7 +16,6 @@ import app.organicmaps.sdk.util.log.Logger;
 
 public class OsmUploadWork extends Worker
 {
-
   private static final String TAG = OsmUploadWork.class.getSimpleName();
   private final Context mContext;
   private final WorkerParameters mWorkerParameters;
@@ -34,11 +32,11 @@ public class OsmUploadWork extends Worker
    */
   public static void startActionUploadOsmChanges(@NonNull Context context)
   {
-    if (Editor.nativeHasSomethingToUpload() && OsmOAuth.isAuthorized(context))
+    if (Editor.nativeHasSomethingToUpload() && OsmOAuth.isAuthorized())
     {
       final Constraints c = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
-      final WorkRequest wr = new OneTimeWorkRequest.Builder(OsmUploadWork.class).setConstraints(c).build();
-      WorkManager.getInstance(context).enqueue(wr);
+      final OneTimeWorkRequest wr = new OneTimeWorkRequest.Builder(OsmUploadWork.class).setConstraints(c).build();
+      WorkManager.getInstance(context).beginUniqueWork("UploadOsmChanges", ExistingWorkPolicy.KEEP, wr).enqueue();
     }
   }
 
@@ -46,13 +44,12 @@ public class OsmUploadWork extends Worker
   @Override
   public Result doWork()
   {
-    final MwmApplication app = MwmApplication.from(mContext);
-    if (!app.getOrganicMaps().arePlatformAndCoreInitialized())
+    if (!MwmApplication.from(mContext).getOrganicMaps().arePlatformAndCoreInitialized())
     {
       Logger.w(TAG, "Application is not initialized, ignoring " + mWorkerParameters);
       return Result.failure();
     }
-    Editor.uploadChanges(mContext);
+    Editor.uploadChanges();
     return Result.success();
   }
 }

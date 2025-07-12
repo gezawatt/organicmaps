@@ -21,10 +21,10 @@ on:
       - packaging/**
       - platform/*apple*
       - platform/*_ios*
-      - platform/*_linux* 
-      - platform/*_mac* 
-      - platform/*qt* 
-      - platform/*_win* 
+      - platform/*_linux*
+      - platform/*_mac*
+      - platform/*qt*
+      - platform/*_win*
       - pyhelpers/**
       - qt*/**
       - skin_generator/**
@@ -51,6 +51,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 100 # enough to get all commits for the current day
+
+      - name: Restore Boost submodule from cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            3party/boost
+            .git/modules/3party/boost
+          key: boost-submodule
 
       - name: Parallel submodules checkout
         shell: bash
@@ -81,6 +89,7 @@ jobs:
         run: |
           cmake --version
           ninja --version
+          echo "ANDROID_CODE=$(../tools/unix/version.sh android_code)" >> "$GITHUB_ENV"
           ./gradlew -Pfirebase assembleGoogleBeta uploadCrashlyticsSymbolFileGoogleBeta uploadCrashlyticsMappingFileGoogleBeta
 
       - name: Upload beta apk to App Distribution
@@ -88,3 +97,17 @@ jobs:
         working-directory: android
         run: |
           ./gradlew appDistributionUploadGoogleBeta
+
+      - name: Upload beta apk to GitHub artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OrganicMaps-${{ env.ANDROID_CODE }}-google-beta.apk
+          path: android/app/build/outputs/apk/google/beta/OrganicMaps-${{ env.ANDROID_CODE }}-google-beta.apk
+          if-no-files-found: error
+
+      - name: Upload beta debug symbols to GitHub artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-debug-symbols.zip
+          path: android/app/build/outputs/native-debug-symbols/googleBeta/native-debug-symbols.zip
+          if-no-files-found: error

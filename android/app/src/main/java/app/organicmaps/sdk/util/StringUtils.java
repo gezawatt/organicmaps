@@ -4,12 +4,8 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
-
 import androidx.annotation.NonNull;
-
-import app.organicmaps.MwmApplication;
 import app.organicmaps.R;
-
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -36,11 +32,15 @@ public class StringUtils
    * — formatPercent(0.37) will return 37%
    *
    * @param fraction a double value, that represents a fraction of a whole
+   * @param fixedFractionDigits if true, prints 13.00% instead of 13%
    * @return correct string representation of percent for different locales
    */
-  public static String formatPercent(double fraction) {
+  public static String formatPercent(double fraction, boolean fixedFractionDigits)
+  {
     NumberFormat percentFormat = NumberFormat.getPercentInstance();
     percentFormat.setMaximumFractionDigits(2);
+    if (fixedFractionDigits)
+      percentFormat.setMinimumFractionDigits(2);
     return percentFormat.format(fraction);
   }
 
@@ -72,21 +72,22 @@ public class StringUtils
   {
     if (size < Constants.GB)
     {
-      int value = (int)((float)size / Constants.MB + 0.5f);
+      int value = (int) ((float) size / Constants.MB + 0.5f);
       if (value == 0)
         value = 1;
 
-      return formatUsingUsLocale("%1$d %2$s", value, MwmApplication.from(context).getString(R.string.mb));
+      return formatUsingUsLocale("%1$d %2$s", value, context.getString(R.string.mb));
     }
 
     float value = ((float) size / Constants.GB);
-    return formatUsingSystemLocale("%1$.1f %2$s", value, MwmApplication.from(context).getString(R.string.gb));
+    return formatUsingSystemLocale("%1$.1f %2$s", value, context.getString(R.string.gb));
   }
 
   public static boolean isRtl()
   {
     Locale defLocale = Locale.getDefault();
-    return Character.getDirectionality(defLocale.getDisplayName(defLocale).charAt(0)) == Character.DIRECTIONALITY_RIGHT_TO_LEFT;
+    return Character.getDirectionality(defLocale.getDisplayName(defLocale).charAt(0))
+ == Character.DIRECTIONALITY_RIGHT_TO_LEFT;
   }
 
   @NonNull
@@ -104,13 +105,16 @@ public class StringUtils
   public static class SimpleTextWatcher implements TextWatcher
   {
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+    public void beforeTextChanged(CharSequence s, int start, int count, int after)
+    {}
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) { }
+    public void onTextChanged(CharSequence s, int start, int before, int count)
+    {}
 
     @Override
-    public void afterTextChanged(Editable s) { }
+    public void afterTextChanged(Editable s)
+    {}
   }
 
   private StringUtils() {}

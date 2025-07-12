@@ -904,7 +904,7 @@ void Framework::ShowTrack(kml::TrackId trackId)
   es.SetIsVisible(track->GetGroupId(), true /* visible */);
 
   if (m_drapeEngine)
-    m_drapeEngine->SetModelViewCenter(rect.Center(), scales::GetScaleLevel(rect), true /* isAnim */, true /* trackVisibleViewport */);
+    m_drapeEngine->SetModelViewRect(rect, true, scales::GetScaleLevel(rect), true /* isAnim */, true /* trackVisibleViewport */);
 
   ActivateMapSelection();
 }
@@ -2057,14 +2057,14 @@ void Framework::DeactivateMapSelection()
     m_currentPlacePageInfo = {};
 
     if (m_drapeEngine != nullptr)
-      m_drapeEngine->DeselectObject();
+      m_drapeEngine->DeselectObject(true);
   }
 }
 
-void Framework::DeactivateMapSelectionCircle()
+void Framework::DeactivateMapSelectionCircle(bool restoreViewport)
 {
     if (m_drapeEngine != nullptr)
-        m_drapeEngine->DeselectObject();
+        m_drapeEngine->DeselectObject(restoreViewport);
 }
 
 void Framework::SwitchFullScreen()
@@ -2388,7 +2388,7 @@ void Framework::PredictLocation(double & lat, double & lon, double accuracy,
                                 double bearing, double speed, double elapsedSeconds)
 {
   double offsetInM = speed * elapsedSeconds;
-  double angle = base::DegToRad(90.0 - bearing);
+  double angle = math::DegToRad(90.0 - bearing);
 
   m2::PointD mercatorPt = mercator::MetersToXY(lon, lat, accuracy).Center();
   mercatorPt = mercator::GetSmPoint(mercatorPt, offsetInM * cos(angle), offsetInM * sin(angle));

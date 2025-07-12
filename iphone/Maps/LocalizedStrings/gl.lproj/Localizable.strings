@@ -514,7 +514,7 @@
 "track_title" = "Traxecto";
 "telegram_url" = "https://t.me/OrganicMapsApp";
 "instagram_url" = "https://www.instagram.com/organicmaps.app";
-"translated_om_site_url" = "https://organicmaps.app/é/";
+"translated_om_site_url" = "https://organicmaps.app/gl/";
 "osm_wiki_about_url" = "https://wiki.openstreetmap.org/wiki/About_OpenStreetMap";
 "app_tip_00" = "Grazas por utilizar os nosos mapas creados pola comunidade!";
 "app_tip_01" = "Coas súas doazóns e apoio, podemos crear os mellores mapas do mundo!";
@@ -564,3 +564,4 @@
 "dialog_routing_disclaimer_precision" = "— O mapa pode ser impreciso e suxerir unha ruta que non sempre pode ser o mellor camiño para chegar ao destino;";
 "editor_category_unsuitable_text" = "Organic Maps permite engadir unicamente categorías de puntos sinxelos, é dicir, non cidades, estradas, lagos, contornos de edificios, etc. Por favor, anada ditas categorías directamente <a href=\"https://www.openstreetmap.org\">OpenStreetMap.org</a>. Consulte nosa <a href=\"https://organicmaps.app/faq/editing/advanced-map-editing\">guía</a> para obter instrucións detalladas paso a paso.";
 "bugreport_alert_message" = "Quere enviar un informe de erro aos desenvolvedores?\nDependemos dos nosos usuarios, xa que Organic Maps non recolle ningunha información sobre erros de forma automática. Grazas de antemán por apoiar a Organic Maps!";
+"saved" = "Gardado";

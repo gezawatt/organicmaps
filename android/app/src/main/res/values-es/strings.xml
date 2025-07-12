@@ -48,7 +48,7 @@
     <!-- Text in About screen -->
     <string name="about_developed_by_enthusiasts">Aplicación de código abierto creada por entusiastas y voluntarios.</string>
     <!-- The button that opens system location settings -->
-    <string name="location_settings">Ajustes de ubicación</string>
+    <string name="location_settings">Configuración de ubicación</string>
     <string name="close">Cerrar</string>
     <string name="unsupported_phone">La aplicación requiere OpenGL acelerado por hardware. Lamentablemente, su dispositivo no es compatible.</string>
     <string name="download">Descargar</string>
@@ -216,7 +216,7 @@
     <string name="length">Longitud</string>
     <string name="share_my_location">Compartir mi ubicación</string>
     <!-- Settings general group in settings screen -->
-    <string name="prefs_group_general">Ajustes generales</string>
+    <string name="prefs_group_general">Configuración general</string>
     <!-- Settings information group in settings screen -->
     <string name="prefs_group_information">Información</string>
     <string name="prefs_group_route">Navegación</string>
@@ -750,7 +750,7 @@
     <string name="search_in_the_list">Buscar en la lista</string>
     <string name="religious_places">Lugares sagrados</string>
     <string name="select_list">Seleccionar lista</string>
-    <string name="transit_not_found">Navegación en Metro aún no disponible en esta región</string>
+    <string name="transit_not_found">La navegación en metro aún no está disponible en esta región</string>
     <string name="dialog_pedestrian_route_is_long_header">No se encontró ninguna ruta de metro</string>
     <string name="dialog_pedestrian_route_is_long_message">Elija un punto de inicio o fin de ruta más cercano a una estación de metro</string>
     <string name="button_layer_isolines">Alturas</string>
