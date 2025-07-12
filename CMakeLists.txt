@@ -117,6 +117,7 @@ if (PLATFORM_WIN)
     -DWIN32_LEAN_AND_MEAN
     -DNOMINMAX
   )
+  add_compile_options("/bigobj")
 endif()
 
 # Built-in CMake configurations: Debug, Release, RelWithDebInfo, MinSizeRel
