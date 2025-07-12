@@ -19,12 +19,13 @@ using std::string;
 
 constexpr char const * kApiVersion = "/api/0.6";
 
-namespace
-{
 
-string FindAuthenticityToken(std::string const & action, string const & body)
+string FindAuthenticityToken(string const & action, string body)
 {
   static std::regex const kActionAndTokenRE(R"~(action="(.+?)".*?name="authenticity_token" value="(.+?)")~");
+
+  // Regex doesn't support multiline matches. Need to remove all line endings from the body.
+  std::erase_if(body, [](char c) { return c == '\n' || c == '\r'; });
 
   auto const begin = std::sregex_iterator{body.begin(), body.end(), kActionAndTokenRE};
   auto const end = std::sregex_iterator{};
@@ -50,10 +51,10 @@ string FindOauthCode(string const & redirectUri)
   return *oauth2code;
 }
 
-string FindAccessToken(string const & body)
+string FindAccessToken(string const & json)
 {
   // Extract access_token from JSON in format {"access_token":"...", "token_type":"Bearer", "scope":"read_prefs"}
-  const base::Json root(body.c_str());
+  const base::Json root(json.c_str());
 
   if (json_is_object(root.get()))
   {
@@ -76,7 +77,6 @@ string BuildPostRequest(std::initializer_list<std::pair<string, string>> const &
   }
   return result;
 }
-}  // namespace
 
 // static
 bool OsmOAuth::IsValid(string const & ks)

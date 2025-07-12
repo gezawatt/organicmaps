@@ -9,7 +9,6 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
@@ -17,20 +16,18 @@ import androidx.annotation.UiThread;
 import androidx.core.content.ContextCompat;
 import androidx.core.location.GnssStatusCompat;
 import androidx.core.location.LocationManagerCompat;
-
-import org.chromium.base.ObserverList;
-
+import app.organicmaps.MwmApplication;
+import app.organicmaps.routing.RoutingController;
 import app.organicmaps.sdk.Framework;
 import app.organicmaps.sdk.Map;
-import app.organicmaps.MwmApplication;
 import app.organicmaps.sdk.bookmarks.data.FeatureId;
 import app.organicmaps.sdk.bookmarks.data.MapObject;
 import app.organicmaps.sdk.routing.JunctionInfo;
-import app.organicmaps.routing.RoutingController;
 import app.organicmaps.sdk.util.Config;
 import app.organicmaps.sdk.util.LocationUtils;
 import app.organicmaps.sdk.util.NetworkPolicy;
 import app.organicmaps.sdk.util.log.Logger;
+import org.chromium.base.ObserverList;
 
 public class LocationHelper implements BaseLocationProvider.Listener
 {
@@ -44,6 +41,8 @@ public class LocationHelper implements BaseLocationProvider.Listener
 
   @NonNull
   private final Context mContext;
+  @NonNull
+  private final SensorHelper mSensorHelper;
 
   private static final String TAG = LocationState.LOCATION_TAG;
 
@@ -62,8 +61,7 @@ public class LocationHelper implements BaseLocationProvider.Listener
   private Runnable mLocationTimeoutRunnable = this::notifyLocationUpdateTimeout;
 
   @NonNull
-  private final GnssStatusCompat.Callback mGnssStatusCallback = new GnssStatusCompat.Callback()
-  {
+  private final GnssStatusCompat.Callback mGnssStatusCallback = new GnssStatusCompat.Callback() {
     @Override
     public void onStarted()
     {
@@ -99,9 +97,10 @@ public class LocationHelper implements BaseLocationProvider.Listener
     }
   };
 
-  public LocationHelper(@NonNull Context context)
+  public LocationHelper(@NonNull Context context, @NonNull SensorHelper sensorHelper)
   {
     mContext = context;
+    mSensorHelper = sensorHelper;
     mLocationProvider = LocationProviderFactory.getProvider(mContext, this);
     mHandler = new Handler();
   }
@@ -123,7 +122,7 @@ public class LocationHelper implements BaseLocationProvider.Listener
 
     if (mMyPosition == null)
       mMyPosition = MapObject.createMapObject(FeatureId.EMPTY, MapObject.MY_POSITION, "", "",
-                                  mSavedLocation.getLatitude(), mSavedLocation.getLongitude());
+                                              mSavedLocation.getLatitude(), mSavedLocation.getLongitude());
 
     return mMyPosition;
   }
@@ -133,7 +132,10 @@ public class LocationHelper implements BaseLocationProvider.Listener
    * @return {@code null} if no location is saved.
    */
   @Nullable
-  public Location getSavedLocation() { return mSavedLocation; }
+  public Location getSavedLocation()
+  {
+    return mSavedLocation;
+  }
 
   /**
    * Indicates about whether a location provider is polling location updates right now or not.
@@ -164,13 +166,10 @@ public class LocationHelper implements BaseLocationProvider.Listener
       return;
     }
 
-    LocationState.nativeLocationUpdated(mSavedLocation.getTime(),
-        mSavedLocation.getLatitude(),
-        mSavedLocation.getLongitude(),
-        mSavedLocation.getAccuracy(),
-        mSavedLocation.getAltitude(),
-        mSavedLocation.getSpeed(),
-        mSavedLocation.getBearing());
+    LocationState.nativeLocationUpdated(mSavedLocation.getTime(), mSavedLocation.getLatitude(),
+                                        mSavedLocation.getLongitude(), mSavedLocation.getAccuracy(),
+                                        mSavedLocation.getAltitude(), mSavedLocation.getSpeed(),
+                                        mSavedLocation.getBearing());
   }
 
   private void notifyLocationUpdateTimeout()
@@ -250,8 +249,8 @@ public class LocationHelper implements BaseLocationProvider.Listener
   public void onFusedLocationUnsupported()
   {
     // Try to downgrade to the native provider first and restart the service before notifying the user.
-    Logger.d(TAG, "provider = " + mLocationProvider.getClass().getSimpleName() + " is not supported," +
-        " downgrading to use native provider");
+    Logger.d(TAG, "provider = " + mLocationProvider.getClass().getSimpleName() + " is not supported,"
+                      + " downgrading to use native provider");
     mLocationProvider.stop();
     mLocationProvider = new AndroidNativeProvider(mContext, this);
     mActive = true;
@@ -273,8 +272,8 @@ public class LocationHelper implements BaseLocationProvider.Listener
   @UiThread
   public void onLocationDisabled()
   {
-    Logger.d(TAG, "provider = " + mLocationProvider.getClass().getSimpleName() +
-        " settings = " + LocationUtils.areLocationServicesTurnedOn(mContext));
+    Logger.d(TAG, "provider = " + mLocationProvider.getClass().getSimpleName()
+                      + " settings = " + LocationUtils.areLocationServicesTurnedOn(mContext));
 
     stop();
     LocationState.nativeOnLocationError(LocationState.ERROR_GPS_OFF);
@@ -321,8 +320,7 @@ public class LocationHelper implements BaseLocationProvider.Listener
     final int mode = Map.isEngineCreated() ? LocationState.getMode() : LocationState.NOT_FOLLOW_NO_POSITION;
     return switch (mode)
     {
-      case LocationState.PENDING_POSITION, LocationState.FOLLOW, LocationState.FOLLOW_AND_ROTATE ->
-          INTERVAL_FOLLOW_MS;
+      case LocationState.PENDING_POSITION, LocationState.FOLLOW, LocationState.FOLLOW_AND_ROTATE -> INTERVAL_FOLLOW_MS;
       case LocationState.NOT_FOLLOW, LocationState.NOT_FOLLOW_NO_POSITION -> INTERVAL_NOT_FOLLOW_MS;
       default -> throw new IllegalArgumentException("Unsupported location mode: " + mode);
     };
@@ -366,12 +364,12 @@ public class LocationHelper implements BaseLocationProvider.Listener
     checkForAgpsUpdates();
 
     if (LocationUtils.checkFineLocationPermission(mContext))
-      MwmApplication.from(mContext).getSensorHelper().start();
+      mSensorHelper.start();
 
     final long oldInterval = mInterval;
     mInterval = calcLocationUpdatesInterval();
-    Logger.i(TAG, "provider = " + mLocationProvider.getClass().getSimpleName() +
-        " mInFirstRun = " + mInFirstRun + " oldInterval = " + oldInterval + " interval = " + mInterval);
+    Logger.i(TAG, "provider = " + mLocationProvider.getClass().getSimpleName() + " mInFirstRun = " + mInFirstRun
+                      + " oldInterval = " + oldInterval + " interval = " + mInterval);
     mActive = true;
     mLocationProvider.start(mInterval);
     mHandler.postDelayed(mLocationTimeoutRunnable, LOCATION_UPDATE_TIMEOUT_MS);
@@ -392,7 +390,7 @@ public class LocationHelper implements BaseLocationProvider.Listener
     Logger.i(TAG);
     mLocationProvider.stop();
     unsubscribeFromGnssStatusUpdates();
-    MwmApplication.from(mContext).getSensorHelper().stop();
+    mSensorHelper.stop();
     mHandler.removeCallbacks(mLocationTimeoutRunnable);
     mActive = false;
   }
@@ -453,7 +451,7 @@ public class LocationHelper implements BaseLocationProvider.Listener
       return;
     final LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
     LocationManagerCompat.registerGnssStatusCallback(locationManager, ContextCompat.getMainExecutor(mContext),
-        mGnssStatusCallback);
+                                                     mGnssStatusCallback);
   }
 
   private void unsubscribeFromGnssStatusUpdates()

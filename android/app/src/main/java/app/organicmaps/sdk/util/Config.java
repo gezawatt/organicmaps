@@ -3,16 +3,18 @@ package app.organicmaps.sdk.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 import app.organicmaps.BuildConfig;
-import app.organicmaps.MwmApplication;
 import app.organicmaps.R;
 import app.organicmaps.util.ThemeUtils;
 
 public final class Config
 {
+  @SuppressWarnings("NotNullFieldNotInitialized")
+  @NonNull
+  private static SharedPreferences mPrefs;
+
   private static final String KEY_APP_STORAGE = "StoragePath";
 
   private static final String KEY_DOWNLOADER_AUTO = "AutoDownloadEnabled";
@@ -233,8 +235,8 @@ public final class Config
   @NonNull
   public static String getCurrentUiTheme(@NonNull Context context)
   {
-    String defaultTheme = MwmApplication.from(context).getString(R.string.theme_default);
-    String res = getString(KEY_MISC_UI_THEME, defaultTheme);
+    final String defaultTheme = context.getString(R.string.theme_default);
+    final String res = getString(KEY_MISC_UI_THEME, defaultTheme);
 
     if (ThemeUtils.isValidTheme(context, res))
       return res;
@@ -253,9 +255,10 @@ public final class Config
   @NonNull
   public static String getUiThemeSettings(@NonNull Context context)
   {
-    String autoTheme = MwmApplication.from(context).getString(R.string.theme_auto);
-    String res = getString(KEY_MISC_UI_THEME_SETTINGS, autoTheme);
-    if (ThemeUtils.isValidTheme(context, res) || ThemeUtils.isAutoTheme(context, res) || ThemeUtils.isNavAutoTheme(context, res))
+    final String autoTheme = context.getString(R.string.theme_auto);
+    final String res = getString(KEY_MISC_UI_THEME_SETTINGS, autoTheme);
+    if (ThemeUtils.isValidTheme(context, res) || ThemeUtils.isAutoTheme(context, res)
+        || ThemeUtils.isNavAutoTheme(context, res))
       return res;
 
     return autoTheme;
@@ -343,25 +346,25 @@ public final class Config
   {
     final String url = getString(KEY_DONATE_URL);
     // Enable donations by default if not Google or Huawei. Replace organicmaps.app/donate/ with localized page.
-    if ((url.isEmpty() && !BuildConfig.FLAVOR.equals("google") && !BuildConfig.FLAVOR.equals("huawei")) ||
-        url.endsWith("organicmaps.app/donate/"))
+    if ((url.isEmpty() && !BuildConfig.FLAVOR.equals("google") && !BuildConfig.FLAVOR.equals("huawei"))
+        || url.endsWith("organicmaps.app/donate/"))
       return context.getString(R.string.translated_om_site_url) + "donate/";
     return url;
   }
 
-  public static void init(@NonNull Context context)
+  public static void init(@NonNull Context context, @NonNull SharedPreferences prefs)
   {
     PreferenceManager.setDefaultValues(context, R.xml.prefs_main, false);
 
-    final SharedPreferences prefs = MwmApplication.prefs(context);
-    final SharedPreferences.Editor editor = prefs.edit();
+    mPrefs = prefs;
+    final SharedPreferences.Editor editor = mPrefs.edit();
 
     // Update counters.
-    final int launchNumber = prefs.getInt(KEY_APP_LAUNCH_NUMBER, 0);
+    final int launchNumber = mPrefs.getInt(KEY_APP_LAUNCH_NUMBER, 0);
     editor.putInt(KEY_APP_LAUNCH_NUMBER, launchNumber + 1);
     editor.putLong(KEY_APP_LAST_SESSION_TIMESTAMP, System.currentTimeMillis());
     editor.putInt(KEY_APP_LAST_INSTALL_VERSION_CODE, BuildConfig.VERSION_CODE);
-    if (launchNumber == 0 || prefs.getInt(KEY_APP_FIRST_INSTALL_VERSION_CODE, 0) == 0)
+    if (launchNumber == 0 || mPrefs.getInt(KEY_APP_FIRST_INSTALL_VERSION_CODE, 0) == 0)
       editor.putInt(KEY_APP_FIRST_INSTALL_VERSION_CODE, BuildConfig.VERSION_CODE);
 
     // Clean up legacy counters.
@@ -384,15 +387,12 @@ public final class Config
 
   public static boolean isFirstLaunch(@NonNull Context context)
   {
-    return !MwmApplication.prefs(context).getBoolean(KEY_MISC_FIRST_START_DIALOG_SEEN, false);
+    return !mPrefs.getBoolean(KEY_MISC_FIRST_START_DIALOG_SEEN, false);
   }
 
   public static void setFirstStartDialogSeen(@NonNull Context context)
   {
-    MwmApplication.prefs(context)
-        .edit()
-        .putBoolean(KEY_MISC_FIRST_START_DIALOG_SEEN, true)
-        .apply();
+    mPrefs.edit().putBoolean(KEY_MISC_FIRST_START_DIALOG_SEEN, true).apply();
   }
 
   public static boolean isSearchHistoryEnabled()
@@ -466,7 +466,6 @@ public final class Config
     {
       setBool(Keys.STREETS, enabled);
     }
-
   }
 
   private static native boolean nativeHasConfigValue(String name);

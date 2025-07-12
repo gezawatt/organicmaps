@@ -1,7 +1,10 @@
 #include "routing/turns_generator_utils.hpp"
-#include "platform/measurement_utils.hpp"
-#include "geometry/mercator.hpp"
 #include "routing/turns.hpp"
+
+#include "platform/measurement_utils.hpp"
+
+#include "geometry/mercator.hpp"
+
 
 namespace routing
 {
@@ -19,7 +22,9 @@ bool IsHighway(HighwayClass hwClass, bool isLink)
 bool IsSmallRoad(HighwayClass hwClass)
 {
   return hwClass == HighwayClass::LivingStreet ||
-         hwClass == HighwayClass::Service || hwClass == HighwayClass::Pedestrian;
+         hwClass == HighwayClass::Service ||
+         hwClass == HighwayClass::ServiceMinor ||
+         hwClass == HighwayClass::Pedestrian;
 }
 
 int CalcDiffRoadClasses(HighwayClass const left, HighwayClass const right)
@@ -120,7 +125,8 @@ double CalcEstimatedTimeToPass(double const distanceMeters, HighwayClass const h
     case HighwayClass::Secondary:     speedKmph = 70.0; break;
     case HighwayClass::Tertiary:      speedKmph = 50.0; break;
     case HighwayClass::LivingStreet:  speedKmph = 20.0; break;
-    case HighwayClass::Service:       speedKmph = 10.0; break;
+    case HighwayClass::Service:
+    case HighwayClass::ServiceMinor:  speedKmph = 10.0; break;
     case HighwayClass::Pedestrian:    speedKmph = 5.0; break;
     default:                          speedKmph = 50.0; break;
   }
@@ -192,7 +198,7 @@ double CalcOneSegmentTurnAngle(TurnInfo const & turnInfo)
   ASSERT_GREATER_OR_EQUAL(turnInfo.m_ingoing->m_path.size(), 2, ());
   ASSERT_GREATER_OR_EQUAL(turnInfo.m_outgoing->m_path.size(), 2, ());
 
-  return base::RadToDeg(PiMinusTwoVectorsAngle(turnInfo.m_ingoing->m_path.back().GetPoint(),
+  return math::RadToDeg(PiMinusTwoVectorsAngle(turnInfo.m_ingoing->m_path.back().GetPoint(),
                                                turnInfo.m_ingoing->m_path[turnInfo.m_ingoing->m_path.size() - 2].GetPoint(),
                                                turnInfo.m_outgoing->m_path[1].GetPoint()));
 }
@@ -203,7 +209,7 @@ double CalcPathTurnAngle(LoadedPathSegment const & segment, size_t const pathInd
   ASSERT_GREATER(pathIndex, 0, ());
   ASSERT_LESS(pathIndex, segment.m_path.size() - 1, ());
 
-  return base::RadToDeg(PiMinusTwoVectorsAngle(segment.m_path[pathIndex].GetPoint(),
+  return math::RadToDeg(PiMinusTwoVectorsAngle(segment.m_path[pathIndex].GetPoint(),
                                                segment.m_path[pathIndex - 1].GetPoint(),
                                                segment.m_path[pathIndex + 1].GetPoint()));
 }
